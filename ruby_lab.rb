@@ -18,8 +18,10 @@ def process_file(file_name)
 
 	begin
 		IO.foreach(file_name) do |line|
-			# do something for each line
-		end
+			artist ,song = line.match(/(?:<SEP>.+<SEP>)(.+)(?:<SEP>)(.+)/).captures
+			puts "Song: #{song}, Artist: #{artist}"
+
+	end
 
 		puts "Finished. Bigram model built.\n"
 	rescue
