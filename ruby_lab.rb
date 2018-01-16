@@ -15,18 +15,26 @@ $name = "<firstname> <lastname>"
 # function to process each line of a file and extract the song titles
 def process_file(file_name)
 	puts "Processing File.... "
-
+	songs = []
 	begin
+		i = 0
 		IO.foreach(file_name) do |line|
-			artist ,song = line.match(/(?:<SEP>.+<SEP>)(.+)(?:<SEP>)(.+)/).captures
-			puts "Song: #{song}, Artist: #{artist}"
-
+			# Captures the 
+			title = line.match(/(?:<SEP>.+<SEP>.+<SEP>)(.+)/).captures[0]
+			songs[i] = title
+			i += 1
 	end
 
 		puts "Finished. Bigram model built.\n"
 	rescue
 		STDERR.puts "Could not open file"
 		exit 4
+	end
+
+	songs.each do |title|
+		title = title.sub(/([\(\[{\\\/_\-:"`+=*]|feat.).+/, '')
+		title = title.gsub(/[?¿!¡\.;&@%#|]/, '')
+		puts title
 	end
 end
 
