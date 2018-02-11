@@ -1,5 +1,5 @@
-#!/usr/bin/ruby
 
+#!/usr/bin/ruby
 ###############################################################
 #
 # CSCI 305 - Ruby Programming Lab
@@ -17,24 +17,27 @@ def process_file(file_name)
 	puts "Processing File.... "
 	songs = []
 	begin
-		i = 0
-		IO.foreach(file_name) do |line|
-			# Captures the 
-			title = line.match(/(?:<SEP>.+<SEP>.+<SEP>)(.+)/).captures[0]
-			songs[i] = title
-			i += 1
-	end
-
+		if RUBY_PLATFORM.downcase.include? 'mswin'
+			file = File.open(file_name)
+			unless file.eof?
+				file.each_line do |line|
+					# do something for each line (if using windows)
+				end
+			end
+			file.close
+		else
+			IO.foreach(file_name, encoding: "utf-8") do |line|
+				# do something for each line (if using macos or linux)
+				title = line.match(/(?:<SEP>.+<SEP>.+<SEP>)(.+)/).captures[0]
+				title = title.sub(/([\(\[{\\\/_\-:"`+=*]|feat.).+/, '')
+				title = title.gsub(/[?¿!¡\.;&@%#|]/, '')
+				puts title
+			end
+		end
 		puts "Finished. Bigram model built.\n"
 	rescue
 		STDERR.puts "Could not open file"
 		exit 4
-	end
-
-	songs.each do |title|
-		title = title.sub(/([\(\[{\\\/_\-:"`+=*]|feat.).+/, '')
-		title = title.gsub(/[?¿!¡\.;&@%#|]/, '')
-		puts title
 	end
 end
 
@@ -53,4 +56,6 @@ def main_loop()
 	# Get user input
 end
 
-main_loop()
+if __FILE__==$0
+	main_loop()
+end
